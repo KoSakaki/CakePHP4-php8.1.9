@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  # PHP Apache
+  php-apache2:
+    build: ./config/php
+    container_name: php2
+    ports:
+      - 80:80
+    volumes:
+      - ./html:/var/www/html
+  mysql2:
+    build:
+      context: ./config/db
+      dockerfile: Dockerfile
+    container_name: mysql2
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_USER}
+      TZ: ${TZ}
+    ports:
+        - ${DB_PORT}:3306
+    volumes:
+        - db-store:/var/lib/mysql
+        - ./config/db/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+        # ★ ローカルのscriptディレクトリにマウントします
+        - ./config/db/script:/docker-entrypoint-initdb.d
+  phpmyadmin2:
+    container_name: phpmyadmin2
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql2
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_USER}
+    links:
+      - mysql2
+    ports:
+      - 8081:80
+    depends_on:
+      - mysql2
+volumes:
+  db-store:
