@@ -1,8 +1,5 @@
 data/*
 !.gitkeep
 
-html/*
-!html/empty
 
 DS_Store
-
