@@ -9,6 +9,7 @@ down:
 
 build:
 	docker-compose up -d --build
+	docker-compose exec php2 composer update
 
 inspect:
 	docker ps
