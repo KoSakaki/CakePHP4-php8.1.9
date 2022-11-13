@@ -14,7 +14,10 @@ class ArticlesTable extends Table
   public function initialize(array $config) : void
   {
     $this->addBehavior('Timestamp');
-    $this->belongsToMany('Tags');
+    $this->belongsToMany('Tags',[
+      'joinTable' => 'articles_tags',
+      'dependent' => true
+    ]);
   }
 
   public function beforeSave(EventInterface $event, $entity, $options)
@@ -22,7 +25,7 @@ class ArticlesTable extends Table
     if($entity->isNew() && !$entity->slug){
       $slugedTitle = Text::slug($entity->title);
       // スラグをスキdーマで定義されている最大長に調整
-      $entity->slug = substr($sluggedTitle, 0, 191);
+      $entity->slug = substr($slugedTitle, 0, 191);
     }
   }
   public function validationDefault(Validator $validator): Validator
@@ -31,7 +34,7 @@ class ArticlesTable extends Table
     ->notEmptyString('title')
     ->minLength('title', 10)
     ->maxLength('title', 255)
-    ->notEmpty('body')
+    ->notEmptyString('body')
     ->minLength('body', 10);
 
     return $validator;
