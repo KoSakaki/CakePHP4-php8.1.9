@@ -34,8 +34,8 @@ services:
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: mysql2
-      PMA_USER: ${DB_USER}
-      PMA_PASSWORD: ${DB_USER}
+      PMA_USER: root
+      PMA_PASSWORD: ${ROOT_PASS}
     links:
       - mysql2
     ports:
